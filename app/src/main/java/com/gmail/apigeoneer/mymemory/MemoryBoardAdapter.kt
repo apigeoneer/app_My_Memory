@@ -13,7 +13,8 @@ import kotlin.math.min
 
 class MemoryBoardAdapter(
         private val context: Context,
-        private val boardSize: BoardSize) :
+        private val boardSize: BoardSize,
+        private val cardImages: List<Int>) :
         RecyclerView.Adapter<MemoryBoardAdapter.ViewHolder>() {
 
     companion object {
@@ -45,6 +46,7 @@ class MemoryBoardAdapter(
         private val imageButton = itemView.findViewById<ImageButton>(R.id.image_button)
 
         fun bind(position: Int) {
+            imageButton.setImageResource(cardImages[position])
             imageButton.setOnClickListener {
                 Log.i(TAG, "Clicked on position $position")
             }

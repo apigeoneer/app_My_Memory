@@ -7,6 +7,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.gmail.apigeoneer.mymemory.models.BoardSize
+import com.gmail.apigeoneer.mymemory.utils.DEFAULT_ICONS
 
 class MainActivity : AppCompatActivity() {
 
@@ -26,7 +27,10 @@ class MainActivity : AppCompatActivity() {
         rvBoard = findViewById(R.id.board_recycler)
         llGameInfo = findViewById(R.id.game_info_linear)
 
-        rvBoard.adapter = MemoryBoardAdapter(this, boardSize)
+        val chosenImages = DEFAULT_ICONS.shuffled().take(boardSize.getNumPairs())
+        val randomizedImages = (chosenImages + chosenImages).shuffled()
+
+        rvBoard.adapter = MemoryBoardAdapter(this, boardSize, randomizedImages)
         rvBoard.setHasFixedSize(true)
         rvBoard.layoutManager = GridLayoutManager(this, boardSize.getWidth())
     }
