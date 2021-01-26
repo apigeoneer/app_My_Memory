@@ -6,6 +6,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.gmail.apigeoneer.mymemory.models.BoardSize
 
 class MainActivity : AppCompatActivity() {
 
@@ -13,6 +14,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var tvNumPairs: TextView
     private lateinit var rvBoard: RecyclerView
     private lateinit var llGameInfo: LinearLayout
+
+    private var boardSize: BoardSize = BoardSize.EASY
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,8 +26,8 @@ class MainActivity : AppCompatActivity() {
         rvBoard = findViewById(R.id.board_recycler)
         llGameInfo = findViewById(R.id.game_info_linear)
 
-        rvBoard.adapter = MemoryBoardAdapter(this, 8)
+        rvBoard.adapter = MemoryBoardAdapter(this, boardSize)
         rvBoard.setHasFixedSize(true)
-        rvBoard.layoutManager = GridLayoutManager(this, 2)
+        rvBoard.layoutManager = GridLayoutManager(this, boardSize.getWidth())
     }
 }
