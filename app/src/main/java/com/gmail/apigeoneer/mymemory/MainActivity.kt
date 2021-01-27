@@ -2,6 +2,7 @@ package com.gmail.apigeoneer.mymemory
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.GridLayoutManager
@@ -13,11 +14,17 @@ import com.gmail.apigeoneer.mymemory.utils.DEFAULT_ICONS
 
 class MainActivity : AppCompatActivity() {
 
+    companion object {
+        private const val TAG = "MainActivity"
+    }
+
     private lateinit var tvNumMoves: TextView
     private lateinit var tvNumPairs: TextView
     private lateinit var rvBoard: RecyclerView
     private lateinit var llGameInfo: LinearLayout
 
+    private lateinit var memoryGame: MemoryGame
+    private lateinit var adapter: MemoryBoardAdapter
     private var boardSize: BoardSize = BoardSize.EASY
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,10 +36,18 @@ class MainActivity : AppCompatActivity() {
         rvBoard = findViewById(R.id.board_recycler)
         llGameInfo = findViewById(R.id.game_info_linear)
 
-        val memoryGame = MemoryGame(boardSize)
+        memoryGame = MemoryGame(boardSize)
 
-        rvBoard.adapter = MemoryBoardAdapter(this, boardSize, memoryGame.cards)
+        adapter = MemoryBoardAdapter(this, boardSize, memoryGame.cards, object: MemoryBoardAdapter.CardClickListener {
+            override fun onCardClicked(position: Int) {
+                //Log.i(TAG, "Card position clicked $position")
+
+            }
+        })
+        rvBoard.adapter = adapter
         rvBoard.setHasFixedSize(true)
         rvBoard.layoutManager = GridLayoutManager(this, boardSize.getWidth())
     }
+
+
 }

@@ -14,14 +14,25 @@ import com.gmail.apigeoneer.mymemory.models.MemoryCard
 import kotlin.math.min
 
 class MemoryBoardAdapter(
-        private val context: Context,
-        private val boardSize: BoardSize,
-        private val cards: List<MemoryCard>) :
-        RecyclerView.Adapter<MemoryBoardAdapter.ViewHolder>() {
+    private val context: Context,
+    private val boardSize: BoardSize,
+    private val cards: List<MemoryCard>,
+    private val cardClickListener: CardClickListener
+) :
+    RecyclerView.Adapter<MemoryBoardAdapter.ViewHolder>() {
 
     companion object {
         private const val MARGIN_SIZE = 10
         private const val TAG = "MemoryBoardAdapter"
+    }
+
+    /**
+     * To change the state of the card when it is tapped, we would like to notify the MainActivity that
+     * the user has taken some action, so that it can then tell that to the MemoryGame class,
+     * so that it makes the necessary changes.
+     */
+    interface CardClickListener {
+        fun onCardClicked(position: Int)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -54,6 +65,7 @@ class MemoryBoardAdapter(
             
             imageButton.setOnClickListener {
                 Log.i(TAG, "Clicked on position $position")
+                cardClickListener.onCardClicked(position)
             }
         }
 
