@@ -5,12 +5,14 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.gmail.apigeoneer.mymemory.models.BoardSize
 import com.gmail.apigeoneer.mymemory.models.MemoryCard
 import com.gmail.apigeoneer.mymemory.models.MemoryGame
 import com.gmail.apigeoneer.mymemory.utils.DEFAULT_ICONS
+import com.google.android.material.snackbar.Snackbar
 
 class MainActivity : AppCompatActivity() {
 
@@ -22,6 +24,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var tvNumPairs: TextView
     private lateinit var rvBoard: RecyclerView
     private lateinit var llGameInfo: LinearLayout
+    private lateinit var clRoot: ConstraintLayout
 
     /**
      * Making the memoryGame & adapter as properties so that they can be accessed by methods o/s of onCreate
@@ -38,6 +41,7 @@ class MainActivity : AppCompatActivity() {
         tvNumPairs = findViewById(R.id.numPairs_text)
         rvBoard = findViewById(R.id.board_recycler)
         llGameInfo = findViewById(R.id.game_info_linear)
+        clRoot = findViewById(R.id.root_cl)
 
         memoryGame = MemoryGame(boardSize)
 
@@ -53,7 +57,22 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateGameWithFlip(position: Int) {
-        memoryGame.flipCard(position)
+        // Error checking
+        // Invalid moves: when game is over, if card is face up after it's already matched
+        if (memoryGame.haveWonGame()) {
+            // Alert the user of the invalid move
+            Snackbar.make(clRoot, "You already won!", Snackbar.LENGTH_LONG).show()
+            return
+        }
+        if(memoryGame.isCardFaceUp(position)) {
+            // Alert the user of the invalid move
+            Snackbar.make(clRoot, "Invalid move!", Snackbar.LENGTH_LONG).show()
+            return
+        }
+
+        if (memoryGame.flipCard(position)) {
+            Log.i(TAG, "Found a match! Num pairs found ${memoryGame.numPairsFound}")
+        }
         adapter.notifyDataSetChanged()
     }
 
