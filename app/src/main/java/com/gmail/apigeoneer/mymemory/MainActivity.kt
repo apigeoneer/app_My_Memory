@@ -23,6 +23,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var rvBoard: RecyclerView
     private lateinit var llGameInfo: LinearLayout
 
+    /**
+     * Making the memoryGame & adapter as properties so that they can be accessed by methods o/s of onCreate
+     */
     private lateinit var memoryGame: MemoryGame
     private lateinit var adapter: MemoryBoardAdapter
     private var boardSize: BoardSize = BoardSize.EASY
@@ -41,12 +44,17 @@ class MainActivity : AppCompatActivity() {
         adapter = MemoryBoardAdapter(this, boardSize, memoryGame.cards, object: MemoryBoardAdapter.CardClickListener {
             override fun onCardClicked(position: Int) {
                 //Log.i(TAG, "Card position clicked $position")
-
+                updateGameWithFlip(position)
             }
         })
         rvBoard.adapter = adapter
         rvBoard.setHasFixedSize(true)
         rvBoard.layoutManager = GridLayoutManager(this, boardSize.getWidth())
+    }
+
+    private fun updateGameWithFlip(position: Int) {
+        memoryGame.flipCard(position)
+        adapter.notifyDataSetChanged()
     }
 
 
