@@ -1,11 +1,13 @@
 package com.gmail.apigeoneer.mymemory
 
+import android.animation.ArgbEvaluator
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.gmail.apigeoneer.mymemory.models.BoardSize
@@ -70,8 +72,18 @@ class MainActivity : AppCompatActivity() {
             return
         }
 
+        // Flip over the card & make changes to the game info
         if (memoryGame.flipCard(position)) {
             Log.i(TAG, "Found a match! Num pairs found ${memoryGame.numPairsFound}")
+
+            // Updating the color of game info as the game progresses
+            val color = ArgbEvaluator().evaluate(
+                    memoryGame.numPairsFound.toFloat() / boardSize.getNumPairs(),
+                    ContextCompat.getColor(this, R.color.color_progress_none),
+                    ContextCompat.getColor(this, R.color.color_progress_full)
+            ) as Int
+            tvNumPairs.setTextColor(color)
+
             // Updating th game info after flipping over a card
             tvNumPairs.text = "Pairs: ${memoryGame.numPairsFound} / ${boardSize.getNumPairs()}"
             if (memoryGame.haveWonGame()) {

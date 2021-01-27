@@ -10,4 +10,6 @@
     <color name="primary">#bbd2c5</color>
     <color name="secondary">#292e49</color>
     <color name="color_gray">#E0E0E0</color>
+    <color name="color_progress_none">#EB2B1D</color>
+    <color name="color_progress_full">#25C02B</color>
 </resources>
