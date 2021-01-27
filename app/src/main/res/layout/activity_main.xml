@@ -26,7 +26,7 @@
             app:cardElevation="8dp">
 
             <TextView
-                android:id="@+id/numMoves_text"
+                android:id="@+id/num_moves_text"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="#535775"
@@ -46,7 +46,7 @@
             app:cardElevation="4dp">
 
             <TextView
-                android:id="@+id/numPairs_text"
+                android:id="@+id/num_pairs_text"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="#535775"

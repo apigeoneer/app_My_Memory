@@ -37,8 +37,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        tvNumMoves = findViewById(R.id.numMoves_text)
-        tvNumPairs = findViewById(R.id.numPairs_text)
+        tvNumMoves = findViewById(R.id.num_moves_text)
+        tvNumPairs = findViewById(R.id.num_pairs_text)
         rvBoard = findViewById(R.id.board_recycler)
         llGameInfo = findViewById(R.id.game_info_linear)
         clRoot = findViewById(R.id.root_cl)
@@ -72,7 +72,13 @@ class MainActivity : AppCompatActivity() {
 
         if (memoryGame.flipCard(position)) {
             Log.i(TAG, "Found a match! Num pairs found ${memoryGame.numPairsFound}")
+            // Updating th game info after flipping over a card
+            tvNumPairs.text = "Pairs: ${memoryGame.numPairsFound} / ${boardSize.getNumPairs()}"
+            if (memoryGame.haveWonGame()) {
+                Snackbar.make(clRoot, "You won! Congratulations.", Snackbar.LENGTH_LONG).show()
+            }
         }
+        tvNumMoves.text = "Moves: ${memoryGame.getNumMoves()}"
         adapter.notifyDataSetChanged()
     }
 
