@@ -45,8 +45,8 @@ class MainActivity : AppCompatActivity() {
         llGameInfo = findViewById(R.id.game_info_linear)
         clRoot = findViewById(R.id.root_cl)
 
+        tvNumPairs.setTextColor(ContextCompat.getColor(this, R.color.color_progress_none))
         memoryGame = MemoryGame(boardSize)
-
         adapter = MemoryBoardAdapter(this, boardSize, memoryGame.cards, object: MemoryBoardAdapter.CardClickListener {
             override fun onCardClicked(position: Int) {
                 //Log.i(TAG, "Card position clicked $position")
