@@ -52,7 +52,7 @@
                 android:background="#535775"
                 android:gravity="center"
                 android:padding="8dp"
-                android:text="Moves: 0"
+                android:text="Pairs: 0"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
                 android:textColor="#FFFFFF" />
         </androidx.cardview.widget.CardView>
