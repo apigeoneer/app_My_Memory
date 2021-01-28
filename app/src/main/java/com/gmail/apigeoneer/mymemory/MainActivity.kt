@@ -49,6 +49,11 @@ class MainActivity : AppCompatActivity() {
         llGameInfo = findViewById(R.id.game_info_linear)
         clRoot = findViewById(R.id.root_cl)
 
+        // To reduce developer time
+        val intent = Intent(this, CreateActivity::class.java)
+        intent.putExtra(EXTRA_BOARD_SIZE, BoardSize.MEDIUM)
+        startActivity(intent)
+
         setupBoard()
     }
 
