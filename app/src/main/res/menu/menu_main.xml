@@ -7,4 +7,8 @@
         android:icon="@drawable/ic_refresh"
         android:title="refresh"
         app:showAsAction="always" />
+    <item
+        android:id="@+id/new_size_menu_item"
+        android:title="Choose New Size"
+        app:showAsAction="never" />
 </menu>
