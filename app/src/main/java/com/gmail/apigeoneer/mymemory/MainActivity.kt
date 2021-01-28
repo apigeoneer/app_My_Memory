@@ -4,6 +4,10 @@ import android.animation.ArgbEvaluator
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.ContextMenu
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -45,6 +49,25 @@ class MainActivity : AppCompatActivity() {
         llGameInfo = findViewById(R.id.game_info_linear)
         clRoot = findViewById(R.id.root_cl)
 
+        setupBoard()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_main, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.refresh_menu_item -> {
+                // Reset the board (set up the game again)
+                setupBoard()
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun setupBoard() {
         tvNumPairs.setTextColor(ContextCompat.getColor(this, R.color.color_progress_none))
         memoryGame = MemoryGame(boardSize)
         adapter = MemoryBoardAdapter(this, boardSize, memoryGame.cards, object: MemoryBoardAdapter.CardClickListener {
