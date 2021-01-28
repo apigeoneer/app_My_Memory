@@ -78,14 +78,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showNewSizeDialog() {
-        val boardSizeView = LayoutInflater.from(this).inflate(R.layout.dialog_board_size, null)
+        val boardSizeView = LayoutInflater.from(this).inflate(R.layout.dialog_board_size,null)
         val radioGroupSize = boardSizeView.findViewById<RadioGroup>(R.id.radio_group)
         when (boardSize) {
             BoardSize.EASY -> radioGroupSize.check(R.id.easy_radio_button)
             BoardSize.MEDIUM -> radioGroupSize.check(R.id.medium_radio_button)
             BoardSize.HARD -> radioGroupSize.check(R.id.hard_radio_button)
         }
-        showAlertDialog("Choose new size", null, View.OnClickListener {
+        showAlertDialog("Choose new size", boardSizeView, View.OnClickListener {
             // Set a new value for the board size
             boardSize = when (radioGroupSize.checkedRadioButtonId) {
                 R.id.easy_radio_button -> BoardSize.EASY
