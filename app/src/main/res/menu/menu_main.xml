@@ -11,4 +11,8 @@
         android:id="@+id/new_size_menu_item"
         android:title="Choose New Size"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/custom_menu_item"
+        android:title="Create Custon Game"
+        app:showAsAction="never" />
 </menu>

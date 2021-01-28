@@ -73,8 +73,27 @@ class MainActivity : AppCompatActivity() {
                 showNewSizeDialog()
                 return true
             }
+            R.id.custom_menu_item -> {
+                showCreationDailog()
+                return true
+            }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun showCreationDailog() {
+        val boardSizeView = LayoutInflater.from(this).inflate(R.layout.dialog_board_size,null)
+        val radioGroupSize = boardSizeView.findViewById<RadioGroup>(R.id.radio_group)
+
+        showAlertDialog("Create your own memory board", boardSizeView, View.OnClickListener {
+            // Set a new value for the board size
+            val desiredBoardSize = when (radioGroupSize.checkedRadioButtonId) {
+                R.id.easy_radio_button -> BoardSize.EASY
+                R.id.medium_radio_button -> BoardSize.MEDIUM
+                else -> BoardSize.HARD
+            }
+            // Navigate to a new activity
+        })
     }
 
     private fun showNewSizeDialog() {
