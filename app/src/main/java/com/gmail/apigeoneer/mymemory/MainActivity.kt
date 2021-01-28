@@ -1,6 +1,7 @@
 package com.gmail.apigeoneer.mymemory
 
 import android.animation.ArgbEvaluator
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -14,15 +15,15 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.gmail.apigeoneer.mymemory.models.BoardSize
-import com.gmail.apigeoneer.mymemory.models.MemoryCard
 import com.gmail.apigeoneer.mymemory.models.MemoryGame
-import com.gmail.apigeoneer.mymemory.utils.DEFAULT_ICONS
+import com.gmail.apigeoneer.mymemory.utils.EXTRA_BOARD_SIZE
 import com.google.android.material.snackbar.Snackbar
 
 class MainActivity : AppCompatActivity() {
 
     companion object {
         private const val TAG = "MainActivity"
+        private const val CREATE_REQUEST_CODE = 273
     }
 
     private lateinit var tvNumMoves: TextView
@@ -74,14 +75,14 @@ class MainActivity : AppCompatActivity() {
                 return true
             }
             R.id.custom_menu_item -> {
-                showCreationDailog()
+                showCreationDialog()
                 return true
             }
         }
         return super.onOptionsItemSelected(item)
     }
 
-    private fun showCreationDailog() {
+    private fun showCreationDialog() {
         val boardSizeView = LayoutInflater.from(this).inflate(R.layout.dialog_board_size,null)
         val radioGroupSize = boardSizeView.findViewById<RadioGroup>(R.id.radio_group)
 
@@ -93,6 +94,9 @@ class MainActivity : AppCompatActivity() {
                 else -> BoardSize.HARD
             }
             // Navigate to a new activity
+            val intent = Intent(this, CreateActivity::class.java)
+            intent.putExtra(EXTRA_BOARD_SIZE, desiredBoardSize)
+            startActivityForResult(intent, CREATE_REQUEST_CODE)
         })
     }
 

@@ -2,6 +2,7 @@ package com.gmail.apigeoneer.mymemory.utils
 
 import com.gmail.apigeoneer.mymemory.R
 
+const val EXTRA_BOARD_SIZE = "EXTRA_BOARD_SIZE"
 val DEFAULT_ICONS = listOf(
         R.drawable.ic_ac,
         R.drawable.ic_account,
