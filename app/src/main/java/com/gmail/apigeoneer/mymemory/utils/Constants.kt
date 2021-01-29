@@ -3,6 +3,7 @@ package com.gmail.apigeoneer.mymemory.utils
 import com.gmail.apigeoneer.mymemory.R
 
 const val EXTRA_BOARD_SIZE = "EXTRA_BOARD_SIZE"
+const val EXTRA_GAME_NAME = "EXTRA_GAME_NAME"
 val DEFAULT_ICONS = listOf(
         R.drawable.ic_ac,
         R.drawable.ic_account,
