@@ -13,5 +13,6 @@
         android:layout_height="50dp"
         android:layout_margin="10dp"
         android:background="@android:color/darker_gray"
+        android:scaleType="centerCrop"
         tools:srcCompat="@tools:sample/avatars" />
 </LinearLayout>

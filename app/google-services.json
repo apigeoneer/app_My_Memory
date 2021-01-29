@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "309824630850",
+    "project_id": "my-memory-54127",
+    "storage_bucket": "my-memory-54127.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:309824630850:android:a49a4d9bc33802207cfddb",
+        "android_client_info": {
+          "package_name": "com.gmail.apigeoneer.mymemory"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "309824630850-jjmh1qidmqdiacijrjgbdfbetrfaopjs.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC1kLhIyic8Gf81TRoyxE4OjH2i3pgILu8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "309824630850-jjmh1qidmqdiacijrjgbdfbetrfaopjs.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
