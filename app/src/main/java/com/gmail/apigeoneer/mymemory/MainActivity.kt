@@ -3,6 +3,7 @@ package com.gmail.apigeoneer.mymemory
 import android.animation.ArgbEvaluator
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -17,6 +18,7 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.github.jinatonic.confetti.CommonConfetti
 import com.gmail.apigeoneer.mymemory.models.BoardSize
 import com.gmail.apigeoneer.mymemory.models.MemoryGame
 import com.gmail.apigeoneer.mymemory.models.UserImageList
@@ -256,6 +258,14 @@ class MainActivity : AppCompatActivity() {
             tvNumPairs.text = "Pairs: ${memoryGame.numPairsFound} / ${boardSize.getNumPairs()}"
             if (memoryGame.haveWonGame()) {
                 Snackbar.make(clRoot, "You won! Congratulations.", Snackbar.LENGTH_LONG).show()
+                CommonConfetti.rainingConfetti(clRoot, intArrayOf(
+//                        R.color.confetti_gold,
+//                        R.color.confetti_silver,
+//                        R.color.confetti_dark_gold)
+                          Color.LTGRAY,
+                          Color.GRAY,
+                          Color.YELLOW)
+                ).oneShot()
             }
         }
         tvNumMoves.text = "Moves: ${memoryGame.getNumMoves()}"
