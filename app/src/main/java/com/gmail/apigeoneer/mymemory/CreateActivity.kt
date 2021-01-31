@@ -34,10 +34,10 @@ import java.io.ByteArrayOutputStream
 class CreateActivity : AppCompatActivity() {
 
     companion object {
-        private const val PICK_PHOTO_CODE = 222
-        private const val READ_EXTERNAL_PHOTOS_CODE = 273
-        private const val READ_PHOTOS_PERMISSION = android.Manifest.permission.READ_EXTERNAL_STORAGE
         private const val TAG = "CreateActivity"
+        private const val PICK_PHOTO_CODE = 655
+        private const val READ_EXTERNAL_PHOTOS_CODE = 248
+        private const val READ_PHOTOS_PERMISSION = android.Manifest.permission.READ_EXTERNAL_STORAGE
         private const val MIN_GAME_NAME_LENGTH = 3
         private const val MAX_GAME_NAME_LENGTH = 14
     }
@@ -80,23 +80,29 @@ class CreateActivity : AppCompatActivity() {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-
         })
 
         adapter = ImagePickerAdapter(this,
             chosenImageUris, boardSize, object: ImagePickerAdapter.ImageClickListener {
                 override fun onPlaceHolderClicked() {
                     if (isPermissionGranted(this@CreateActivity, READ_PHOTOS_PERMISSION)) {
-                        (launchIntentForPhotos())
+                        launchIntentForPhotos()
                     } else {
-                        requestPermission(this@CreateActivity, READ_PHOTOS_PERMISSION,  READ_EXTERNAL_PHOTOS_CODE)
+                        requestPermission(this@CreateActivity, READ_PHOTOS_PERMISSION, READ_EXTERNAL_PHOTOS_CODE)
                     }
                 }
-
             })
         rvImagePicker.adapter = adapter
         rvImagePicker.setHasFixedSize(true)
         rvImagePicker.layoutManager = GridLayoutManager(this, boardSize.getWidth())
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home) {
+            finish()
+            return true
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onRequestPermissionsResult(
@@ -112,14 +118,6 @@ class CreateActivity : AppCompatActivity() {
             }
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId === android.R.id.home) {
-            finish()
-            return true
-        }
-        return super.onOptionsItemSelected(item)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -174,8 +172,8 @@ class CreateActivity : AppCompatActivity() {
 
     private fun handleImageUploading(gameName: String) {
         pbUploading.visibility = View.VISIBLE
+        val uploadedImageUrls = mutableListOf<String>()
         var didEncounterError = false
-        val uploadedImageUris = mutableListOf<String>()
 
         for ((index, photoUri) in chosenImageUris.withIndex()) {
             val imageByteArray = getImageByteArray(photoUri)
@@ -198,18 +196,19 @@ class CreateActivity : AppCompatActivity() {
                         return@addOnCompleteListener
                     }
                     val downloadUrl = downloadUrlTask.result.toString()
-                    uploadedImageUris.add(downloadUrl)
-                    pbUploading.progress = uploadedImageUris.size * 100 / chosenImageUris.size
-                    Log.i(TAG, "Finished uploading $photoUri, num uploaded ${uploadedImageUris.size}")
-                    if (uploadedImageUris.size == chosenImageUris.size) {
-                        handleAllImagesUploaded(gameName, uploadedImageUris)
+                    uploadedImageUrls.add(downloadUrl)
+                    pbUploading.progress = uploadedImageUrls.size * 100 / chosenImageUris.size
+                    Log.i(TAG, "Finished uploading $photoUri, num uploaded ${uploadedImageUrls.size}")
+                    if (uploadedImageUrls.size == chosenImageUris.size) {
+                        handleAllImagesUploaded(gameName, uploadedImageUrls)
                     }
                 }
         }
     }
 
     private fun handleAllImagesUploaded(gameName: String, imageUrls: MutableList<String>) {
-        db.collection("games").document(gameName)
+        db.collection("games")
+            .document(gameName)
             .set(mapOf("images" to imageUrls))
             .addOnCompleteListener { gameCreationTask ->
                 pbUploading.visibility = View.GONE

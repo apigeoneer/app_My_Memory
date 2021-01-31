@@ -1,6 +1,7 @@
 package com.gmail.apigeoneer.mymemory
 
 import android.content.Context
+import android.icu.number.NumberFormatter.with
 import android.service.quickaccesswallet.GetWalletCardsCallback
 import android.util.Log
 import android.view.LayoutInflater
@@ -13,6 +14,7 @@ import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.gmail.apigeoneer.mymemory.models.BoardSize
 import com.gmail.apigeoneer.mymemory.models.MemoryCard
+import com.squareup.picasso.Picasso
 import kotlin.math.min
 
 class MemoryBoardAdapter(
@@ -24,8 +26,8 @@ class MemoryBoardAdapter(
     RecyclerView.Adapter<MemoryBoardAdapter.ViewHolder>() {
 
     companion object {
-        private const val MARGIN_SIZE = 10
         private const val TAG = "MemoryBoardAdapter"
+        private const val MARGIN_SIZE = 10
     }
 
     /**
@@ -62,13 +64,20 @@ class MemoryBoardAdapter(
 
         fun bind(position: Int) {
             val memoryCard = cards[position]
-            imageButton.setImageResource( if (memoryCard.isFaceUp) memoryCard.identifier
-                else R.drawable.ic_launcher_background)
+            if (memoryCard.isFaceUp) {
+                if (memoryCard.imageUrl != null) {
+                    Picasso.get().load(memoryCard.imageUrl).placeholder(R.drawable.ic_launcher_background).into(imageButton)
+                } else {
+                    imageButton.setImageResource(memoryCard.identifier)
+                }
+            } else {
+                imageButton.setImageResource(R.drawable.ic_launcher_background)
+            }
 
             /**
              * Changing the opacity & background of a memory card that's matched
              */
-            imageButton.alpha = if (memoryCard.isMatched) 0.5f else 1.0f
+            imageButton.alpha = if (memoryCard.isMatched) 0.4f else 1.0f
             val colorStateList = if (memoryCard.isMatched) ContextCompat.getColorStateList(context, R.color.color_gray) else null
             ViewCompat.setBackgroundTintList(imageButton, colorStateList)
             

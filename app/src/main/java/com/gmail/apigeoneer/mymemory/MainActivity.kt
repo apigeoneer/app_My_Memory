@@ -1,6 +1,7 @@
 package com.gmail.apigeoneer.mymemory
 
 import android.animation.ArgbEvaluator
+import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -16,8 +17,13 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.gmail.apigeoneer.mymemory.models.BoardSize
 import com.gmail.apigeoneer.mymemory.models.MemoryGame
+import com.gmail.apigeoneer.mymemory.models.UserImageList
 import com.gmail.apigeoneer.mymemory.utils.EXTRA_BOARD_SIZE
+import com.gmail.apigeoneer.mymemory.utils.EXTRA_GAME_NAME
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
+import com.squareup.picasso.Picasso
 
 class MainActivity : AppCompatActivity() {
 
@@ -26,12 +32,14 @@ class MainActivity : AppCompatActivity() {
         private const val CREATE_REQUEST_CODE = 273
     }
 
+    private lateinit var clRoot: ConstraintLayout
+    private lateinit var rvBoard: RecyclerView
     private lateinit var tvNumMoves: TextView
     private lateinit var tvNumPairs: TextView
-    private lateinit var rvBoard: RecyclerView
-    private lateinit var llGameInfo: LinearLayout
-    private lateinit var clRoot: ConstraintLayout
 
+    private val db = Firebase.firestore
+    private var gameName: String? = null
+    private var customGameImages: List<String>? = null
     /**
      * Making the memoryGame & adapter as properties so that they can be accessed by methods o/s of onCreate
      */
@@ -43,16 +51,15 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        clRoot = findViewById(R.id.root_cl)
+        rvBoard = findViewById(R.id.board_recycler)
         tvNumMoves = findViewById(R.id.num_moves_text)
         tvNumPairs = findViewById(R.id.num_pairs_text)
-        rvBoard = findViewById(R.id.board_recycler)
-        llGameInfo = findViewById(R.id.game_info_linear)
-        clRoot = findViewById(R.id.root_cl)
 
-        // To reduce developer time
-        val intent = Intent(this, CreateActivity::class.java)
-        intent.putExtra(EXTRA_BOARD_SIZE, BoardSize.EASY)
-        startActivity(intent)
+//       //  To reduce developer time
+//        val intent = Intent(this, CreateActivity::class.java)
+//        intent.putExtra(EXTRA_BOARD_SIZE, BoardSize.EASY)
+//        startActivity(intent)
 
         setupBoard()
     }
@@ -85,6 +92,43 @@ class MainActivity : AppCompatActivity() {
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == CREATE_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            val customGameName = data?.getStringExtra(EXTRA_GAME_NAME)
+            if (customGameName == null) {
+                Log.e(TAG, "Got null custom game from CreateActivity")
+                return
+            }
+            downloadGame(customGameName)
+        }
+        super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    private fun downloadGame(customGameName: String) {
+       // if (gameName != null) {
+            db.collection("games").document(customGameName).get().addOnSuccessListener { document ->
+                val userImageList = document.toObject(UserImageList::class.java)
+                if (userImageList?.images == null) {
+                    Log.e(TAG, "Invalid custom game data from Firestore")
+                    Snackbar.make(clRoot, "Sorry, we couldn't find any such game, $gameName", Snackbar.LENGTH_LONG).show()
+                    return@addOnSuccessListener
+                }
+                val numCards = userImageList.images.size * 2
+                boardSize = BoardSize.getByValue(numCards)
+                customGameImages = userImageList.images
+                setupBoard()
+                gameName = customGameName
+                // Pre-fetch the images for faster loading
+//                for (imageUrl in userImageList.images) {
+//                    Picasso.get().load(imageUrl).fetch()
+//                }
+//                Snackbar.make(clRoot, "You're now playing '$customGameName'!", Snackbar.LENGTH_LONG).show()
+            }.addOnFailureListener { exception ->
+                Log.e(TAG, "Exception when retrieving game", exception)
+            }
+        //}
     }
 
     private fun showCreationDialog() {
@@ -120,12 +164,13 @@ class MainActivity : AppCompatActivity() {
                 R.id.medium_radio_button -> BoardSize.MEDIUM
                 else -> BoardSize.HARD
             }
+            gameName = null
+            customGameImages = null
             setupBoard()
         })
     }
 
     private fun showAlertDialog(title: String, view: View?, positiveClickListener: View.OnClickListener) {
-        AlertDialog.Builder(this)
         AlertDialog.Builder(this)
             .setTitle(title)
             .setView(view)
@@ -136,6 +181,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupBoard() {
+        supportActionBar?.title = gameName ?: getString(R.string.app_name)
         when (boardSize) {
             BoardSize.EASY -> {
                 tvNumMoves.text = "Easy: 4 x 2"
@@ -150,9 +196,9 @@ class MainActivity : AppCompatActivity() {
                 tvNumPairs.text = "Pairs: 0 / 12"
             }
         }
-
         tvNumPairs.setTextColor(ContextCompat.getColor(this, R.color.color_progress_none))
-        memoryGame = MemoryGame(boardSize)
+        memoryGame = MemoryGame(boardSize, customGameImages)
+
         adapter = MemoryBoardAdapter(this, boardSize, memoryGame.cards, object: MemoryBoardAdapter.CardClickListener {
             override fun onCardClicked(position: Int) {
                 //Log.i(TAG, "Card position clicked $position")
@@ -169,12 +215,12 @@ class MainActivity : AppCompatActivity() {
         // Invalid moves: when game is over, if card is face up after it's already matched
         if (memoryGame.haveWonGame()) {
             // Alert the user of the invalid move
-            Snackbar.make(clRoot, "You already won!", Snackbar.LENGTH_LONG).show()
+            Snackbar.make(clRoot, "You already won! Use the menu to play again.", Snackbar.LENGTH_LONG).show()
             return
         }
         if(memoryGame.isCardFaceUp(position)) {
             // Alert the user of the invalid move
-            Snackbar.make(clRoot, "Invalid move!", Snackbar.LENGTH_LONG).show()
+            Snackbar.make(clRoot, "Invalid move!", Snackbar.LENGTH_SHORT).show()
             return
         }
 
@@ -199,6 +245,4 @@ class MainActivity : AppCompatActivity() {
         tvNumMoves.text = "Moves: ${memoryGame.getNumMoves()}"
         adapter.notifyDataSetChanged()
     }
-
-
 }

@@ -1,9 +1,13 @@
 package com.gmail.apigeoneer.mymemory.models
 
 enum class BoardSize(val numCards: Int) {
-    EASY( numCards = 8),
-    MEDIUM( numCards = 18),
-    HARD( numCards = 24);
+    EASY( 8),
+    MEDIUM( 18),
+    HARD( 24);
+
+    companion object {
+        fun getByValue(value: Int) = values().first { it.numCards == value }
+    }
 
     fun getWidth(): Int {
         return when (this) {
@@ -20,5 +24,4 @@ enum class BoardSize(val numCards: Int) {
     fun getNumPairs(): Int {
         return numCards / 2
     }
-
 }
