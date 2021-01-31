@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.RadioGroup
 import android.widget.TextView
@@ -90,6 +91,10 @@ class MainActivity : AppCompatActivity() {
                 showCreationDialog()
                 return true
             }
+            R.id.download_menu_tem -> {
+                showDownloadDialog()
+                return true
+            }
         }
         return super.onOptionsItemSelected(item)
     }
@@ -104,6 +109,16 @@ class MainActivity : AppCompatActivity() {
             downloadGame(customGameName)
         }
         super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    private fun showDownloadDialog() {
+        val boardDownloadView = LayoutInflater.from(this).inflate(R.layout.dialog_download_board, null)
+        showAlertDialog("Fetch memory game", boardDownloadView, View.OnClickListener {
+            // Grab the text of the game that the user wants to download
+            val etDownloadGame = boardDownloadView.findViewById<EditText>(R.id.download_game_edit_text)
+            val gameToDownload = etDownloadGame.text.toString().trim()
+            downloadGame(gameToDownload)
+        })
     }
 
     private fun downloadGame(customGameName: String) {

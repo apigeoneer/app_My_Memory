@@ -15,4 +15,8 @@
         android:id="@+id/custom_menu_item"
         android:title="Create Custon Game"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/download_menu_tem"
+        android:title="Download Custom Game"
+        app:showAsAction="never" />
 </menu>
