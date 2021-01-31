@@ -135,11 +135,11 @@ class MainActivity : AppCompatActivity() {
                 customGameImages = userImageList.images
                 setupBoard()
                 gameName = customGameName
-                // Pre-fetch the images for faster loading
-//                for (imageUrl in userImageList.images) {
-//                    Picasso.get().load(imageUrl).fetch()
-//                }
-//                Snackbar.make(clRoot, "You're now playing '$customGameName'!", Snackbar.LENGTH_LONG).show()
+                // Pre-fetching the images for faster loading
+                for (imageUrl in userImageList.images) {
+                    Picasso.get().load(imageUrl).fetch()
+                }
+                Snackbar.make(clRoot, "You're now playing '$customGameName'!", Snackbar.LENGTH_LONG).show()
             }.addOnFailureListener { exception ->
                 Log.e(TAG, "Exception when retrieving game", exception)
             }
